@@ -24,3 +24,54 @@ pip install -r requirements.txt
 cp .env.example .env  # 환경값 수정
 python manage.py migrate
 python manage.py runserver
+
+## 도커 사용시 별도의 Redis 필요
+```bash
+docker compose up -d redis
+
+## Celery 워커 실행:
+```bash
+celery -A momento_backend worker -l info
+
+### 데이터 흐름
+RN(6장 업로드)
+  → POST /api/v1/models/six
+    → Model 생성(status=PENDING)
+    → Celery job 시작
+      1) 전처리(회전 보정/리사이즈)
+      2) COLMAP SFM/MVS → fused.ply
+      3) Poisson → mesh.obj → 리덕션
+      4) GLB 익스포트
+      5) 업로드/URL 저장
+      6) stage=READY_FOR_NEXT, progress=100
+  RN 폴링: GET /api/v1/models/{id}/status
+  RN 결과 수신: GET /api/v1/models/{id}/artifacts
+
+### 폴더 구조
+momento-backend/
+├─ manage.py
+├─ requirements.txt
+├─ docker-compose.yml
+├─ .env.example
+├─ README.md
+├─ momento_backend/
+│  ├─ __init__.py
+│  ├─ settings.py
+│  ├─ urls.py
+│  ├─ celery.py
+│  ├─ asgi.py
+│  └─ wsgi.py
+└─ models3d/
+   ├─ apps.py
+   ├─ __init__.py
+   ├─ models.py
+   ├─ serializers.py
+   ├─ views.py
+   ├─ tasks.py
+   ├─ migrations/
+   │  └─ __init__.py
+   └─ pipeline/
+      ├─ __init__.py
+      ├─ preprocess.py
+      ├─ colmap.py
+      └─ mesh.py
