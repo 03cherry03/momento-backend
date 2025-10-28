@@ -34,6 +34,7 @@ docker compose up -d redis
 ## Celery 워커 실행:
 ```bash
 celery -A momento_backend worker -l info
+```
 
 ### 데이터 흐름
 RN(6장 업로드)
@@ -48,9 +49,9 @@ RN(6장 업로드)
       6) stage=READY_FOR_NEXT, progress=100
   RN 폴링: GET /api/v1/models/{id}/status
   RN 결과 수신: GET /api/v1/models/{id}/artifacts
-```
 
 ### 폴더 구조
+```bash
 momento-backend/
 ├─ manage.py
 ├─ requirements.txt
@@ -78,3 +79,4 @@ momento-backend/
       ├─ preprocess.py
       ├─ colmap.py
       └─ mesh.py
+```
