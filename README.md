@@ -1,6 +1,6 @@
 # Momento 3D Backend (Django + DRF + Celery)
 
-스마트폰으로 촬영한 사진 **6장**을 업로드하면 서버에서 **SFM/MVS(COLMAP)** → **Poisson 재구성(Open3D)** → **GLB 내보내기(Trimesh)**까지 자동으로 처리하고, 결과 아티팩트를 URL로 제공합니다. 프런트는 React Native를 가정합니다.
+스마트폰으로 촬영한 사진 **6장**을 업로드하면 서버에서 **SFM/MVS(COLMAP) → Poisson 재구성(Open3D) → GLB 내보내기(Trimesh)** 까지 자동으로 처리하고, 결과 아티팩트를 URL로 제공합니다. 프런트는 React Native를 가정합니다.
 
 ## 주요 기능
 - **사진 6장 업로드 + 즉시 실행**: `/api/v1/models/six`
@@ -37,6 +37,7 @@ celery -A momento_backend worker -l info
 ```
 
 ### 데이터 흐름
+```bash
 RN(6장 업로드)
   → POST /api/v1/models/six
     → Model 생성(status=PENDING)
@@ -49,6 +50,7 @@ RN(6장 업로드)
       6) stage=READY_FOR_NEXT, progress=100
   RN 폴링: GET /api/v1/models/{id}/status
   RN 결과 수신: GET /api/v1/models/{id}/artifacts
+```
 
 ### 폴더 구조
 ```bash
