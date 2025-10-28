@@ -24,10 +24,12 @@ pip install -r requirements.txt
 cp .env.example .env  # 환경값 수정
 python manage.py migrate
 python manage.py runserver
+```
 
 ## 도커 사용시 별도의 Redis 필요
 ```bash
 docker compose up -d redis
+```
 
 ## Celery 워커 실행:
 ```bash
@@ -46,6 +48,7 @@ RN(6장 업로드)
       6) stage=READY_FOR_NEXT, progress=100
   RN 폴링: GET /api/v1/models/{id}/status
   RN 결과 수신: GET /api/v1/models/{id}/artifacts
+```
 
 ### 폴더 구조
 momento-backend/
